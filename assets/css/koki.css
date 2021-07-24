@@ -1,0 +1,60 @@
+.img {
+    position: absolute;
+    width: 124px;
+    margin-top: 130px;
+}
+
+.navbar {
+    background-image: url(/assets/img/nav-koki.png);
+    position: relative;
+}
+
+.q-btn {
+    background-color: #FFC452;
+    color: #ffff;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 300px;
+    border-radius: 30px;
+}
+
+.q2-btn {
+    background-color: #FFE34F;
+    border-radius: 30px;
+    color: #ffff;
+    margin-top: 20px;
+}
+
+.c-btn {
+    background-color: #46B733;
+    color: #ffff;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 300px;
+    border-radius: 30px;
+}
+
+.c2-btn {
+    background-color: rgba(70, 183, 51, 69%);
+    border-radius: 30px;
+    color: #ffff;
+    margin-top: 20px;
+}
+
+.jml-btn {
+    background-color: #FFE34F;
+    color: #ffff;
+    margin-left: 90px;
+}
+
+.card {
+    position: relative;
+    margin-top: 30px;
+    border-radius: 0px;
+}
+
+.card-img-top {
+    position: absolute;
+    width: 80px;
+    margin-top: -20px;
+}
