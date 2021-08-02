@@ -1,0 +1,40 @@
+.cus-side {
+  background-color: #FFF2B0;
+}
+
+.sidebar-cus {
+  color: #000;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.img-cuss {
+  width: 80px;
+}
+
+.bot-side-cus {
+  color: #7B7B7B;
+  margin-top: -10px;
+  font-size: 18px;
+}
+
+.navbar {
+  height: 100px;
+}
+
+.mr-nav {
+  content:none ;
+  color: #000;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.mr-nav span{
+  color: #7B7B7B;
+  font-size: 14px;
+  font-weight: lighter;
+}
+
+.form-cuss-search {
+  width: 250px;
+}

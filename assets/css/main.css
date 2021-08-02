@@ -1,0 +1,119 @@
+body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+}
+
+html {
+    height: -webkit-fill-available;
+}
+
+main {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.b-example-divider {
+    flex-shrink: 0;
+    width: 0.2rem;
+    height: 100vh;
+    background-color: rgba(255, 227, 79, .47);
+    border: solid rgba(255, 227, 79, .47);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(255, 255, 255, .5), inset 0 .125em .5em rgba(255, 255, 255, 0.15);
+}
+
+.bi {
+    vertical-align: -.125em;
+    pointer-events: none;
+    fill: currentColor;
+}
+
+.scrollarea {
+    overflow-y: auto;
+}
+
+.fw-semibold {
+    font-weight: 600;
+}
+
+.lh-tight {
+    line-height: 1.25;
+}
+
+.r-bar {
+    width: 20rem;
+    border: 2px solid rgba(255, 227, 79, .47);
+    padding: 10px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+
+}
+
+.r-logo {
+    padding-left: 180px;
+}
+
+.form1 {
+    width: 250px;
+    margin-left: 15px;
+    border-radius: 20px;
+    border-width: 1px 0;
+    box-shadow: -2px 2px rgba(255, 185, 79, 1);
+    /* box-shadow: 5px 10px solid rgba(255, 185, 79, 1); */
+}
+
+/* Search Button */
+
+
+
+.searchbar {
+    margin-bottom: auto;
+    margin-top: auto;
+    height: 60px;
+    border-radius: 30px;
+    padding: 10px;
+    border-width: 1px 0;
+    box-shadow: -2px 2px rgba(255, 185, 79, 1);
+}
+
+.search_input {
+    color: white;
+    border: 0;
+    outline: 0;
+    background: none;
+    width: 0;
+    caret-color: transparent;
+    line-height: 40px;
+    transition: width 0.4s linear;
+}
+
+.searchbar .search_input {
+    padding: 0 10px;
+    width: 450px;
+    caret-color: red;
+    transition: width 0.4s linear;
+}
+
+.searchbar .search_icon {
+    background: white;
+    color: #e74c3c;
+}
+
+.search_icon {
+    height: 40px;
+    width: 40px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+}
+
+/* End Search Button */
