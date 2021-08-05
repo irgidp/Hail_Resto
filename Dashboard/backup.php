@@ -12,8 +12,7 @@ $spreadsheet = new Spreadsheet();
 $spreadsheet->setActiveSheetIndex(0)
     ->setCellValue('A1', 'no_pembayaran')
     ->setCellValue('B1', 'no_pesanan')
-    ->setCellValue('C1', 'id_pegawai')
-    ->setCellValue('D1', 'total_harga');
+    ->setCellValue('C1', 'total_harga');
 
 $column = 2;
 
@@ -24,8 +23,7 @@ foreach ($res as $row) {
     $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A' . $column, $row['no_pembayaran'])
         ->setCellValue('B' . $column, $row['no_pesanan'])
-        ->setCellValue('C' . $column, $row['id_pegawai'])
-        ->setCellValue('D' . $column, $row['total_harga']);
+        ->setCellValue('C' . $column, $row['total_harga']);
 
     $column++;
 }

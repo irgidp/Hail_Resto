@@ -241,3 +241,26 @@ function hapusPegawai($id_pegawai)
 						 WHERE id_pegawai = '$id_pegawai'");
     return mysqli_affected_rows($conn);
 }
+
+function tambahPesanan($data)
+{
+    global $conn;
+
+    $id_menu = $_POST['id_menu'];
+    $no_meja = $_POST['no_meja'];
+    $nama_pemesan = $_POST['nama_pemesan'];
+    $jml_pesanan = $_POST['jml_pesanan'];
+    $harga = $_POST['harga'];
+
+
+    $query = "INSERT INTO pesanan 
+                (id_menu, no_meja, nama_pemesan, jml_pesanan, harga)
+			  VALUES
+			  ('$id_menu','$no_meja','$nama_pemesan','$jml_pesanan','$harga')
+			  ";
+    // var_dump($query);
+    // die;
+    mysqli_query($conn, $query);
+
+    return mysqli_affected_rows($conn);
+}
