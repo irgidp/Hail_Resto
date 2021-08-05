@@ -1,0 +1,24 @@
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+body {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.img {
+    position: absolute;
+    width: 124px;
+    margin-top: 130px;
+}
+
+.navbar {
+    background-image: url("../img/nav-kas.png");
+    position: relative;
+}
+
+.q2-btn {
+    background-color: #FFF2AC;
+    border-radius: 30px;
+    color: #ffff;
+    margin-top: 20px;
+}
