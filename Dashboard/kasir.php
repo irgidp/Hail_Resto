@@ -1,8 +1,14 @@
 <?php
+session_start();
+if (!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit;
+}
 require "functions.php";
 
-$pesanan = query("SELECT * FROM pesanan");
+$pesanan = query("SELECT * FROM pesanan,menu where pesanan.id_menu=menu.id_menu");
 $jsArray = "var prdName = new Array();\n";
+
 
 ?>
 
@@ -34,22 +40,22 @@ $jsArray = "var prdName = new Array();\n";
     <section class="container" style="margin-top: 150px;">
         <form action="" method="POST">
             <div class="col-lg-4">
-                <select class="form-select form1" name="pesanan" aria-label="Default select example" name="prdId"
-                    onchange="changeValue(this.value)">
+                <select class="form-select form1" name="pesanan" aria-label="Default select example" name="prdId" onchange="changeValue(this.value)">
                     <option selected>Atas Nama</option>
                     <?php
-                        foreach ($pesanan as $row) {
-                            echo "<option value=\"" . $row['no_pesanan'] . "\">" . $row['nama_pemesan']  . "</option>";
-                            // $jsArray .= "prdName['" . $row['no_pesanan'] . "'] = '" . addslashes($row['nama_pemesan']) . "';\n";
-                            $jsArray .= "prdName['" . $row['no_pesanan'] . "'] = 
+                    foreach ($pesanan as $row) {
+                        echo "<option value=\"" . $row['no_pesanan'] . "\">" . $row['nama_pemesan']  . "</option>";
+                        // $jsArray .= "prdName['" . $row['no_pesanan'] . "'] = '" . addslashes($row['nama_pemesan']) . "';\n";
+                        $jsArray .= "prdName['" . $row['no_pesanan'] . "'] = 
                             {
                                 name:'" . addslashes($row['nama_pemesan']) . "',
                                 meja:'" . addslashes($row['no_meja']) . "',
                                 harga:'" . addslashes($row['harga']) . "',
                                 jumlah:'" . addslashes($row['jml_pesanan']) . "',
+                                menu:'" . addslashes($row['nama_menu']) . "',
 
-                            };\n"; 
-                        }
+                            };\n";
+                    }
                     ?>
                 </select>
             </div>
@@ -59,55 +65,75 @@ $jsArray = "var prdName = new Array();\n";
             <div class="card shadow-sm p-3 mb-5 bg-body" style="border-radius: 25px;">
                 <div class="card-body fw-bold">
                     <div class="d-flex justify-content-between px-4">
-                        <p><input type="text" name="prod_name" id="prd_name"/></p>
-                        <p>Meja <input type="text" name="prod_meja" id="prd_meja"/></p>
+                        <p><input style="border-style: none;" type="text" name="prod_name" id="prd_name" /></p>
+                        <p>Meja <input style="border-style: none;" type="text" name="prod_meja" id="prd_meja" /></p>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between px-4">
-                        <p>Pangshit</p>
-                        <p><input type="text" name="prod_harga" id="prd_harga"/></p>
+                        <p><input style="border-style: none;" type="text" name="prod_menu" id="prd_menu" /></p>
+                        <p><input style="border-style: none;" type="text" name="prod_harga" id="prd_harga" /></p>
                     </div>
                     <div class="d-flex justify-content-between px-4">
                         <p>Jumlah</p>
-                        <p><input type="text" name="prod_jumlah" id="prd_jumlah"/></p>
-                        
+                        <p><input style="border-style: none;" type="text" name="prod_jumlah" id="prd_jumlah" /></p>
+
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between px-4">
                         <p>Total</p>
-                        <p><input type="text" name="prod_total" id="total"/></p>
+                        <p><input style="border-style: none;" type="text" name="prod_total" id="total" /></p>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <input class="form-control w-50 rounded-pill" type="text" placeholder="Masukkan Pembayaran" id="pembayaran">
-                        <button class="btn btn-warning rounded-pill" style="width: 124px;">Process</button>
+                        <input class="form-control w-50 rounded-pill" type="text" placeholder="Masukkan Pembayaran" name="pembayaran" id="pembayaran">
+                        <button class="btn btn-warning rounded-pill" style="width: 124px;" name="progress" onclick="pembayaran()">Process</button>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between px-4">
                         <p>Change</p>
-                        <p>$2.74</p>
+                        <p><input style="border-style: none;" type="text" id="kembalian" name="kembalian" /></p>
                     </div>
                     <button class="btn btn-success float-end rounded-pill" style="width: 124px;">Done</button>
                 </div>
             </div>
         </div>
+        <div> <a href="logout.php" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none" aria-expanded="false">
+                <i class="bi bi-box-arrow-right"></i>LogOut
+            </a>
+        </div>
         <script type="text/javascript">
             <?php echo $jsArray; ?>
-                function changeValue(id){
+
+            function changeValue(id) {
                 document.getElementById('prd_name').value = prdName[id].name;
                 document.getElementById('prd_meja').value = prdName[id].meja;
                 document.getElementById('prd_harga').value = prdName[id].harga;
                 document.getElementById('prd_jumlah').value = prdName[id].jumlah;
+                document.getElementById('prd_menu').value = prdName[id].menu;
 
                 var harga = Number(document.getElementById('prd_harga').value = prdName[id].harga);
                 var jumlah = Number(document.getElementById('prd_jumlah').value = prdName[id].jumlah);
                 var total = harga * jumlah;
-                    document.getElementById('total').value = total;
+                document.getElementById('total').value = total;
+
+                // var pembayaran = document.getElementById('pembayaran').value;
+                // var kembalian = total - pembayaran;
+                // document.getElementById('kembalian').value = kembalian;
+
+            };
+
+            function pembayaran() {
+                var harga = Number(document.getElementById('prd_harga').value = prdName[id].harga);
+                var jumlah = Number(document.getElementById('prd_jumlah').value = prdName[id].jumlah);
+                var total = harga * jumlah;
+                document.getElementById('total').value = total;
 
                 var pembayaran = document.getElementById('pembayaran').value;
+
                 var kembalian = total - pembayaran;
-                    document.getElementById('kembalian').value=kembalian;
-                
-                };
+                document.getElementById('kembalian').innerHTML = kembalian;
+                alert('kembalian');
+                console.log('pembayaran');
+            }
         </script>
     </section>
 </body>

@@ -1,78 +1,74 @@
-<?php 
-    session_start();
-    require "functions.php";
-    $menuFood = query("SELECT * FROM menu WHERE kategori='Food'");
-    $menuDrink = query("SELECT * FROM menu WHERE kategori='Drink'");
-    $menuDessert = query("SELECT * FROM menu WHERE kategori='Dessert'");
+<?php
+session_start();
+if (!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit;
+}
+require "functions.php";
+$menuFood = query("SELECT * FROM menu WHERE kategori='Food'");
+$menuDrink = query("SELECT * FROM menu WHERE kategori='Drink'");
+$menuDessert = query("SELECT * FROM menu WHERE kategori='Dessert'");
 
-    if(isset($_POST["add_to_cart"]))
-    {
-        if(isset($_SESSION["shooping_cart"]))
-        {
-            $item_array_id = array_column($_SESSION["shooping_cart"], "item_id");
-            if(!in_array($_GET["id_menu"], $item_array_id))
-            {
-                $count = count($_SESSION["shooping_cart"]);
-                $item_array = array(
-                    'item_id'  => $_GET["id_menu"],
-                    'item_nama' => $_POST["hidden_name"],
-                    'item_harga' => $_POST["hidden_harga"],
-                    'item_quantity' => $_POST["quantity"]
-                );
-                $_SESSION["shooping_cart"][$count] = $item_array;
-            } else {
-                echo '<script>alert("Item sudah ada, hapus terlebih dahulu untuk menambah pesanan!");</script>';
-                echo '<script>window.location="main.php"</script>';
-            }
-        }else
-        {   
+if (isset($_POST["add_to_cart"])) {
+    if (isset($_SESSION["shooping_cart"])) {
+        $item_array_id = array_column($_SESSION["shooping_cart"], "item_id");
+        if (!in_array($_GET["id_menu"], $item_array_id)) {
+            $count = count($_SESSION["shooping_cart"]);
             $item_array = array(
                 'item_id'  => $_GET["id_menu"],
                 'item_nama' => $_POST["hidden_name"],
                 'item_harga' => $_POST["hidden_harga"],
                 'item_quantity' => $_POST["quantity"]
             );
-            $_SESSION["shooping_cart"][0] = $item_array;
+            $_SESSION["shooping_cart"][$count] = $item_array;
+        } else {
+            echo '<script>alert("Item sudah ada, hapus terlebih dahulu untuk menambah pesanan!");</script>';
+            echo '<script>window.location="main.php"</script>';
         }
+    } else {
+        $item_array = array(
+            'item_id'  => $_GET["id_menu"],
+            'item_nama' => $_POST["hidden_name"],
+            'item_harga' => $_POST["hidden_harga"],
+            'item_quantity' => $_POST["quantity"]
+        );
+        $_SESSION["shooping_cart"][0] = $item_array;
     }
+}
 
-    if(isset($_GET["action"]))
-    {
-        if($_GET["action"] == "delete")
-        {
-            foreach($_SESSION["shooping_cart"] as $keys => $values)
-            {
-                if($values["item_id"] == $_GET["id_menu"])
-                {
-                    unset($_SESSION["shooping_cart"][$keys]);
-                    echo '<script>alert("Item Dihapus");</script>';
-                    echo '<script>window.location="main.php"</script>';
-                }
+if (isset($_GET["action"])) {
+    if ($_GET["action"] == "delete") {
+        foreach ($_SESSION["shooping_cart"] as $keys => $values) {
+            if ($values["item_id"] == $_GET["id_menu"]) {
+                unset($_SESSION["shooping_cart"][$keys]);
+                echo '<script>alert("Item Dihapus");</script>';
+                echo '<script>window.location="main.php"</script>';
             }
         }
     }
+}
 
-    $meja = query("SELECT * FROM meja");
+$meja = query("SELECT * FROM meja");
 
-    if (isset($_POST["tambahOrder"])) {
+if (isset($_POST["tambahOrder"])) {
 
-        // cek apakah data berhasil di tambahkan atau tidak
-        if (tambahPesanan($_POST) > 0) {
-    
-            echo "
+    // cek apakah data berhasil di tambahkan atau tidak
+    if (tambahPesanan($_POST) > 0) {
+
+        echo "
             <script>
                 alert('Pesanan berhasil! Silahkan melakukan pembayaran!');
             </script>
             ";
-        } else {
-            echo "
+    } else {
+        echo "
             <script>
                 alert('Pesanan gagal!');
                 // document.location.href = 'main.php';
             </script>
             ";
-        }
     }
+}
 ?>
 
 <!doctype html>
@@ -87,8 +83,7 @@
     <title>Main</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
 
 
@@ -125,8 +120,7 @@
                 </a>
             </ul>
             <div class="border-top">
-                <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none"
-                    aria-expanded="false">
+                <a href="logout.php" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none" aria-expanded="false">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -164,9 +158,7 @@
 
                 <ul class="nav nav-pills mb-3 mt-3 ms-5 " id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active btn-menu" id="pills-home-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
-                            aria-selected="true">
+                        <button class="nav-link active btn-menu" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
                             <div class="card card-menu" style="width: 120px;">
                                 <img src="../assets/img/food.png" class="card-img-top w-50 mx-auto" alt="...">
                                 <div class="card-body">
@@ -176,9 +168,7 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link btn-menu" id="pills-profile-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
-                            aria-selected="false">
+                        <button class="nav-link btn-menu" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
                             <div class="card card-menu" style="width: 120px;">
                                 <img src="../assets/img/drink.png" class="card-img-top w-50 mx-auto" alt="...">
                                 <div class="card-body">
@@ -188,9 +178,7 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link btn-menu" id="pills-contact-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact"
-                            aria-selected="false">
+                        <button class="nav-link btn-menu" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">
                             <div class="card card-menu" style="width: 120px;">
                                 <img src="../assets/img/dessert.png" class="card-img-top w-50 mx-auto" alt="...">
                                 <div class="card-body">
@@ -204,40 +192,32 @@
 
                 <!-- CONTENT FOOD -->
                 <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                        aria-labelledby="pills-home-tab">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                         <ul class="nav nav-pills mb-3 mt-3 ms-5 " id="pills-tab" role="tablist">
                             <?php $i = 1; ?>
                             <?php foreach ($menuFood as $row) : ?>
-                            <li class="nav-item" role="presentation">
+                                <li class="nav-item" role="presentation">
 
-                                <div class="card card1 ms-3" style="width: 190px;">
-                                    <img src=" ../assets/img/<?= $row["gambar"]; ?>" class="card-img-top mx-auto w-50"
-                                        alt="...">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-dark"><?= $row['nama_menu'] ?></h6>
-                                        <h7 class="card-subtitle text-muted">Rp<?= $row['harga'] ?></h7>
-                                        <form method="POST" action="main.php?action=add&id_menu=<?= $row['id_menu'] ?>">
-                                            <div class="mt-3">
-                                                <input type="text" class="form-control form-tambah" name="quantity"
-                                                    id="exampleInputEmail1" aria-describedby="emailHelp">
-                                                <input type="hidden" class="form-control form-tambah" name="hidden_name"
-                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                    value="<?= $row['nama_menu'] ?>">
-                                                <input type="hidden" class="form-control form-tambah"
-                                                    name="hidden_harga" id="exampleInputEmail1"
-                                                    aria-describedby="emailHelp" value="<?= $row['harga'] ?>">
-                                            </div>
-                                            <div class="mt-3 mx-auto">
-                                                <button type="submit" name="add_to_cart"
-                                                    class="btn btn-tambah">Tambah</button>
-                                            </div>
+                                    <div class="card card1 ms-3" style="width: 190px;">
+                                        <img src=" ../assets/img/<?= $row["gambar"]; ?>" class="card-img-top mx-auto w-50" alt="...">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-dark"><?= $row['nama_menu'] ?></h6>
+                                            <h7 class="card-subtitle text-muted">Rp<?= $row['harga'] ?></h7>
+                                            <form method="POST" action="main.php?action=add&id_menu=<?= $row['id_menu'] ?>">
+                                                <div class="mt-3">
+                                                    <input type="text" class="form-control form-tambah" name="quantity" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                                    <input type="hidden" class="form-control form-tambah" name="hidden_name" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?= $row['nama_menu'] ?>">
+                                                    <input type="hidden" class="form-control form-tambah" name="hidden_harga" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?= $row['harga'] ?>">
+                                                </div>
+                                                <div class="mt-3 mx-auto">
+                                                    <button type="submit" name="add_to_cart" class="btn btn-tambah">Tambah</button>
+                                                </div>
 
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <?php $i++; ?>
+                                </li>
+                                <?php $i++; ?>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -248,36 +228,29 @@
                         <ul class="nav nav-pills mb-3 mt-3 ms-5 " id="pills-tab" role="tablist">
                             <?php $i = 1; ?>
                             <?php foreach ($menuDrink as $row) : ?>
-                            <li class="nav-item" role="presentation">
+                                <li class="nav-item" role="presentation">
 
-                                <div class="card card1 ms-3" style="width: 190px;">
-                                    <img src=" ../assets/img/<?= $row["gambar"]; ?>" class="card-img-top mx-auto w-50"
-                                        alt="...">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-dark"><?= $row['nama_menu'] ?></h6>
-                                        <h7 class="card-subtitle text-muted">Rp<?= $row['harga'] ?></h7>
-                                        <form method="POST" action="main.php?action=add&id_menu=<?= $row['id_menu'] ?>">
-                                            <div class="mt-3">
-                                                <input type="text" class="form-control form-tambah" name="quantity"
-                                                    id="exampleInputEmail1" aria-describedby="emailHelp">
-                                                <input type="hidden" class="form-control form-tambah" name="hidden_name"
-                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                    value="<?= $row['nama_menu'] ?>">
-                                                <input type="hidden" class="form-control form-tambah"
-                                                    name="hidden_harga" id="exampleInputEmail1"
-                                                    aria-describedby="emailHelp" value="<?= $row['harga'] ?>">
-                                            </div>
-                                            <div class="mt-3 mx-auto">
-                                                <button type="submit" name="add_to_cart"
-                                                    class="btn btn-tambah">Tambah</button>
-                                            </div>
+                                    <div class="card card1 ms-3" style="width: 190px;">
+                                        <img src=" ../assets/img/<?= $row["gambar"]; ?>" class="card-img-top mx-auto w-50" alt="...">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-dark"><?= $row['nama_menu'] ?></h6>
+                                            <h7 class="card-subtitle text-muted">Rp<?= $row['harga'] ?></h7>
+                                            <form method="POST" action="main.php?action=add&id_menu=<?= $row['id_menu'] ?>">
+                                                <div class="mt-3">
+                                                    <input type="text" class="form-control form-tambah" name="quantity" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                                    <input type="hidden" class="form-control form-tambah" name="hidden_name" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?= $row['nama_menu'] ?>">
+                                                    <input type="hidden" class="form-control form-tambah" name="hidden_harga" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?= $row['harga'] ?>">
+                                                </div>
+                                                <div class="mt-3 mx-auto">
+                                                    <button type="submit" name="add_to_cart" class="btn btn-tambah">Tambah</button>
+                                                </div>
 
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
 
-                            </li>
-                            <?php $i++; ?>
+                                </li>
+                                <?php $i++; ?>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -288,36 +261,29 @@
                         <ul class="nav nav-pills mb-3 mt-3 ms-5 " id="pills-tab" role="tablist">
                             <?php $i = 1; ?>
                             <?php foreach ($menuDessert as $row) : ?>
-                            <li class="nav-item" role="presentation">
+                                <li class="nav-item" role="presentation">
 
-                                <div class="card card1 ms-3" style="width: 190px;">
-                                    <img src=" ../assets/img/<?= $row["gambar"]; ?>" class="card-img-top mx-auto w-50"
-                                        alt="...">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-dark"><?= $row['nama_menu'] ?></h6>
-                                        <h7 class="card-subtitle text-muted">Rp<?= $row['harga'] ?></h7>
-                                        <form method="POST" action="main.php?action=add&id_menu=<?= $row['id_menu'] ?>">
-                                            <div class="mt-3">
-                                                <input type="text" class="form-control form-tambah" name="quantity"
-                                                    id="exampleInputEmail1" aria-describedby="emailHelp">
-                                                <input type="hidden" class="form-control form-tambah" name="hidden_name"
-                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                    value="<?= $row['nama_menu'] ?>">
-                                                <input type="hidden" class="form-control form-tambah"
-                                                    name="hidden_harga" id="exampleInputEmail1"
-                                                    aria-describedby="emailHelp" value="<?= $row['harga'] ?>">
-                                            </div>
-                                            <div class="mt-3 mx-auto">
-                                                <button type="submit" name="add_to_cart"
-                                                    class="btn btn-tambah">Tambah</button>
-                                            </div>
+                                    <div class="card card1 ms-3" style="width: 190px;">
+                                        <img src=" ../assets/img/<?= $row["gambar"]; ?>" class="card-img-top mx-auto w-50" alt="...">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-dark"><?= $row['nama_menu'] ?></h6>
+                                            <h7 class="card-subtitle text-muted">Rp<?= $row['harga'] ?></h7>
+                                            <form method="POST" action="main.php?action=add&id_menu=<?= $row['id_menu'] ?>">
+                                                <div class="mt-3">
+                                                    <input type="text" class="form-control form-tambah" name="quantity" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                                    <input type="hidden" class="form-control form-tambah" name="hidden_name" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?= $row['nama_menu'] ?>">
+                                                    <input type="hidden" class="form-control form-tambah" name="hidden_harga" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?= $row['harga'] ?>">
+                                                </div>
+                                                <div class="mt-3 mx-auto">
+                                                    <button type="submit" name="add_to_cart" class="btn btn-tambah">Tambah</button>
+                                                </div>
 
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
 
-                            </li>
-                            <?php $i++; ?>
+                                </li>
+                                <?php $i++; ?>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -339,15 +305,14 @@
                         <select class="form-select form1" name="no_meja" aria-label="Default select example">
                             <option selected>Pilih Meja</option>
                             <?php
-                        foreach ($meja as $row) {
-                            echo "<option value=\"" . $row['no_meja'] . "\">" ."Meja ". $row['no_meja']  . " - " . $row['kapasitas'] . " Orang " ."</option>";
-                        }
-                        ?>
+                            foreach ($meja as $row) {
+                                echo "<option value=\"" . $row['no_meja'] . "\">" . "Meja " . $row['no_meja']  . " - " . $row['kapasitas'] . " Orang " . "</option>";
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="mb-3 mt-5">
-                        <input type="text" class="form-control form1" name="nama_pemesan" id="exampleInputPassword1"
-                            placeholder="Nama pemesan..">
+                        <input type="text" class="form-control form1" name="nama_pemesan" id="exampleInputPassword1" placeholder="Nama pemesan..">
                     </div>
 
                     <div class="mb-3">
@@ -355,56 +320,46 @@
                         <div class="container">
 
                             <?php
-                                if(!empty($_SESSION["shooping_cart"]))
-                                {
-                                    $total = 0;
-                                    foreach($_SESSION["shooping_cart"] as $keys => $values) 
-                                    {
-                                    ?>
-                            <div class="col-md-12 ms-1">
-                                <div class="d-flex justify-content-between mt-3">
-                                    <h5><?php echo $values["item_nama"]; ?></h5>
-                                    <a type="button" class="btn btn-sm rounded-pill"
-                                        style="background: #E96F6F; color:white;"
-                                        href="main.php?action=delete&id_menu=<?php echo $values["item_id"]; ?>">remove</a>
-                                </div>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <h6 class="ms-2">
-                                        <span style="color: #FFB94F;">x</span><?php echo $values["item_quantity"]; ?>
-                                    </h6>
-                                    <h6 class="me-1">Rp<?php echo $values["item_harga"]; ?></h6>
-                                </div>
-                            </div>
+                            if (!empty($_SESSION["shooping_cart"])) {
+                                $total = 0;
+                                foreach ($_SESSION["shooping_cart"] as $keys => $values) {
+                            ?>
+                                    <div class="col-md-12 ms-1">
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <h5><?php echo $values["item_nama"]; ?></h5>
+                                            <a type="button" class="btn btn-sm rounded-pill" style="background: #E96F6F; color:white;" href="main.php?action=delete&id_menu=<?php echo $values["item_id"]; ?>">remove</a>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <h6 class="ms-2">
+                                                <span style="color: #FFB94F;">x</span><?php echo $values["item_quantity"]; ?>
+                                            </h6>
+                                            <h6 class="me-1">Rp<?php echo $values["item_harga"]; ?></h6>
+                                        </div>
+                                    </div>
 
 
                             <?php
-                            $total = $total + ($values["item_quantity"] * $values["item_harga"]);
+                                    $total = $total + ($values["item_quantity"] * $values["item_harga"]);
                                 }
-                                }
+                            }
                             ?>
-                            <input type="hidden" class="form-control form-tambah" name="id_menu" id="exampleInputEmail1"
-                                aria-describedby="emailHelp" value="<?php echo $values["item_id"]; ?>">
-                            <input type="hidden" class="form-control form-tambah" name="jml_pesanan"
-                                id="exampleInputEmail1" aria-describedby="emailHelp"
-                                value="<?php echo $values["item_quantity"]; ?>">
-                            <input type="hidden" class="form-control form-tambah" name="harga" id="exampleInputEmail1"
-                                aria-describedby="emailHelp" value="<?php echo $values["item_harga"]; ?>">
+                            <input type="hidden" class="form-control form-tambah" name="id_menu" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?php echo $values["item_id"]; ?>">
+                            <input type="hidden" class="form-control form-tambah" name="jml_pesanan" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?php echo $values["item_quantity"]; ?>">
+                            <input type="hidden" class="form-control form-tambah" name="harga" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?php echo $values["item_harga"]; ?>">
 
                         </div>
 
                     </div>
             </ul>
             <div class="">
-                <button type="submit" name="tambahOrder" class="btn btn-order" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">Order</button>
+                <button type="submit" name="tambahOrder" class="btn btn-order" data-bs-toggle="modal" data-bs-target="#exampleModal">Order</button>
             </div>
             </form>
         </div>
         <!-- End Right Sidebar -->
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script src="../assets/js/main.js"></script>
 </body>

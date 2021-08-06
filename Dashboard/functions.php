@@ -264,3 +264,23 @@ function tambahPesanan($data)
 
     return mysqli_affected_rows($conn);
 }
+
+function updatePesanan($no_pesanan)
+{
+    global $conn;
+    mysqli_query($conn, "UPDATE pesanan SET
+							 status = 1
+				   		WHERE no_pesanan = '$no_pesanan'
+						");
+    return mysqli_affected_rows($conn);
+}
+
+function pesananDone($no_pesanan)
+{
+    global $conn;
+    mysqli_query($conn, "UPDATE pesanan SET
+							 status = 2
+				   		WHERE no_pesanan = '$no_pesanan'
+						");
+    return mysqli_affected_rows($conn);
+}

@@ -21,9 +21,32 @@ if (isset($_POST["login"])) {
 
         if (password_verify($password, $row["password"])) {
             // set session
-            $_SESSION["login"] = true;
 
-            header("Location: index.php");
+            if ($row['level'] == "admin") {
+
+                $_SESSION["login"] = true;
+                $_SESSION['level'] = "admin";
+                header("Location: index.php");
+            } else if ($row['level'] == "pelayan") {
+
+                $_SESSION["login"] = true;
+                $_SESSION['level'] = "pelayan";
+                header("Location: main.php");
+            } else if ($row['level'] == "kasir") {
+
+                $_SESSION["login"] = true;
+                $_SESSION['level'] = "kasir";
+                header("Location: kasir.php");
+            } else if ($row['level'] == "koki") {
+
+                $_SESSION["login"] = true;
+                $_SESSION['level'] = "koki";
+                header("Location: koki.php");
+            }
+
+            // $_SESSION["login"] = true;
+
+            // header("Location: index.php");
             exit;
         }
     }
